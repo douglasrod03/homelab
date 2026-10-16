@@ -1,696 +1,218 @@
-# Homelab de Infraestrutura, Segurança e Cloud
-
-Projeto de laboratório pessoal voltado para **redes, administração de infraestrutura, segurança, observabilidade, automação e cloud**.
-
-A estrutura foi planejada para permitir a evolução do ambiente por etapas, começando pela rede local e administração centralizada e avançando para monitoramento, Infrastructure as Code e workloads em nuvem.
-
-> Este README será atualizado conforme cada etapa da topologia for implementada, testada e documentada.
-
----
-
-## Visão geral
-
-A arquitetura do laboratório é dividida em quatro áreas principais:
-
-- **Edge / Rede local:** MikroTik responsável pelo controle da rede.
-- **Administração:** PC principal utilizado para gerenciamento e automação da infraestrutura.
-- **Servidor local:** Notebook com Ubuntu Server utilizado para serviços internos e segurança.
-- **Cloud:** Ambiente AWS para Kubernetes, aplicações e recursos provisionados via Terraform.
-
----
-
-## Topologia
-
-```text
-                         INTERNET
-                            │
-                            ▼
-                      ┌───────────┐
-                      │ MikroTik  │
-                      │ DNS       │
-                      │ Firewall  │
-                      │ LAN       │
-                      └─────┬─────┘
-                            │
-              ┌─────────────┴─────────────┐
-              │                           │
-              ▼                           ▼
-       ┌──────────────┐            ┌──────────────┐
-       │   PC Admin   │            │ Ubuntu Server│
-       │   Zorin OS   │            │   Notebook   │
-       │  Terraform   │            │    Wazuh     │
-       └──────┬───────┘            └──────────────┘
-              │
-              │ Gerenciamento / IaC
-              │
-              ▼
-       ┌──────────────┐
-       │     AWS      │
-       │  Kubernetes  │
-       │ Aplicações   │
-       └──────────────┘
-```
-
-A versão gráfica da topologia pode ser adicionada em:
-
-```text
-docs/topologia.png
-```
-
-E referenciada no README com:
-
-```md
-![Topologia do laboratório](docs/topologia.png)
-```
-
----
-
-# Componentes
-
-## 1. MikroTik — Edge e rede local
-
-O MikroTik atua como ponto central da infraestrutura de rede do laboratório.
-
-### Responsabilidades
-
-- Roteamento da rede local
-- DHCP
-- DNS
-- Firewall
-- NAT
-- Segmentação de rede
-- Controle de acesso
-- Comunicação entre os equipamentos do laboratório
-- Futuramente, conexão segura com a infraestrutura AWS
+# Projeto de Infraestrutura de Rede Corporativa — Cisco Packet Tracer
+
+## 1. Objetivo
+
+Projetar e implementar uma infraestrutura de rede corporativa no Cisco Packet Tracer, composta por uma matriz e duas filiais localizadas em cidades diferentes.
+
+O projeto deverá contemplar a topologia física e lógica, segmentação de rede, endereçamento IP, serviços corporativos, roteamento entre unidades e políticas de segurança.
+
+A implementação será realizada do zero, utilizando os equipamentos e recursos disponíveis no Cisco Packet Tracer.
+
+## 2. Escopo da infraestrutura
+
+### 2.1. Matriz
+
+**Capacidade:** 100 notebooks corporativos.
+
+#### Equipamentos de rede
+- 1 roteador de borda para conexão com o provedor de internet.
+- 1 firewall corporativo.
+- 1 switch de distribuição (Core).
+- 3 switches gerenciáveis de acesso, com 48 portas.
+- 4 pontos de acesso Wi-Fi corporativo.
+
+#### Servidores e armazenamento
+- 1 servidor de Active Directory (AD) para autenticação centralizada.
+- 1 servidor DNS para resolução de nomes.
+- 1 servidor DHCP para distribuição automática de endereços IP.
+- 1 servidor de arquivos para compartilhamento de documentos.
+- 1 servidor de monitoramento da infraestrutura.
+- 1 dispositivo NAS para armazenamento e backup.
+
+#### Dispositivos adicionais
+- 100 notebooks corporativos.
+- 8 impressoras de rede.
+- 2 computadores para administração da infraestrutura.
+- 2 equipamentos de videoconferência.
+
+#### Distribuição dos departamentos
+
+| Departamento | Notebooks |
+|---|---:|
+| Administrativo / Financeiro | 20 |
+| Recursos Humanos | 10 |
+| Comercial | 25 |
+| Tecnologia da Informação | 15 |
+| Operações | 20 |
+| Diretoria | 10 |
+| **Total** | **100** |
+
+### 2.2. Filial 1
+
+**Capacidade:** 70 notebooks corporativos.
+
+#### Equipamentos de rede
+- 1 roteador WAN para comunicação com a matriz.
+- 1 firewall para controle de tráfego.
+- 2 switches gerenciáveis de 48 portas.
+- 2 pontos de acesso Wi-Fi corporativo.
+
+#### Dispositivos adicionais
+- 70 notebooks corporativos.
+- 4 impressoras de rede.
+- 1 computador para administração local.
+- 1 equipamento de videoconferência.
+
+#### Serviços de rede
+- DHCP centralizado na matriz ou serviço local.
+- DNS centralizado na matriz.
+- Autenticação por meio do domínio corporativo.
+- Acesso autorizado aos servidores e recursos compartilhados da matriz.
+
+#### Distribuição dos departamentos
+
+| Departamento | Notebooks |
+|---|---:|
+| Atendimento | 25 |
+| Comercial | 20 |
+| Operações | 15 |
+| Administrativo | 10 |
+| **Total** | **70** |
+
+### 2.3. Filial 2
+
+**Capacidade:** 50 notebooks corporativos.
+
+#### Equipamentos de rede
+- 1 roteador WAN para comunicação com a matriz.
+- 1 firewall para controle de tráfego.
+- 2 switches gerenciáveis de 24 ou 48 portas.
+- 2 pontos de acesso Wi-Fi corporativo.
+
+#### Dispositivos adicionais
+- 50 notebooks corporativos.
+- 3 impressoras de rede.
+- 1 computador para administração local.
+- 1 equipamento de videoconferência.
+
+#### Serviços de rede
+- DHCP centralizado na matriz ou serviço local.
+- DNS centralizado na matriz.
+- Autenticação por meio do domínio corporativo.
+- Acesso autorizado aos sistemas internos e recursos compartilhados.
 
-### Equipamento
+#### Distribuição dos departamentos
 
-```text
-Modelo:
-RouterOS:
-IP de gerenciamento:
-Rede LAN:
-Gateway:
-DNS:
-```
+| Departamento | Notebooks |
+|---|---:|
+| Comercial | 20 |
+| Atendimento | 15 |
+| Administrativo | 10 |
+| Gerência | 5 |
+| **Total** | **50** |
 
-### Implementação
+## 3. Conectividade entre unidades
 
-- [ ] Configuração inicial
-- [ ] Atualização do RouterOS
-- [ ] Configuração da interface WAN
-- [ ] Configuração da LAN
-- [ ] Configuração do DHCP
-- [ ] Configuração do DNS
-- [ ] Configuração de endereçamento estático
-- [ ] Criação das regras de firewall
-- [ ] Configuração de NAT
-- [ ] Separação das redes/VLANs
-- [ ] Testes de conectividade
-- [ ] Backup da configuração
+A matriz será responsável pela infraestrutura central e pelos serviços corporativos compartilhados.
 
-### Configurações realizadas
+As duas filiais deverão possuir conectividade WAN com a matriz, permitindo a comunicação entre as redes autorizadas.
 
-```text
-Adicionar aqui as configurações implementadas.
-```
+Requisitos:
+- Conexão com a internet nas três unidades.
+- Roteamento entre matriz e filiais.
+- Comunicação bidirecional entre as redes autorizadas.
+- Acesso remoto aos serviços corporativos da matriz.
+- Implementação de VPN site-to-site, caso suportada pelos equipamentos escolhidos.
+- Configuração de rotas de retorno.
+- Controle do tráfego entre as unidades.
 
-### Testes
+## 4. Segmentação lógica da rede
 
-```text
-Adicionar comandos, prints, testes de ping, traceroute,
-DNS, regras de firewall e validações realizadas.
-```
+A infraestrutura deverá ser segmentada por VLAN, separando os dispositivos de acordo com sua função.
 
----
+| VLAN | Nome | Finalidade |
+|---:|---|---|
+| 10 | ADMIN | Administração da infraestrutura de TI |
+| 20 | SERVIDORES | Servidores e serviços corporativos |
+| 30 | FINANCEIRO | Dispositivos do departamento financeiro |
+| 40 | COMERCIAL | Dispositivos do departamento comercial |
+| 50 | OPERACOES | Operações e atendimento |
+| 60 | DIRETORIA | Dispositivos da diretoria |
+| 70 | WIFI-CORP | Acesso Wi-Fi corporativo |
+| 80 | IMPRESSORAS | Impressoras de rede |
+| 90 | VISITANTES | Acesso de visitantes isolado da rede interna |
+| 99 | GERENCIAMENTO | Gerenciamento de equipamentos de rede |
 
-# 2. PC Admin
+As VLANs poderão utilizar identificadores iguais nas diferentes unidades, desde que sejam configuradas em redes IP distintas e corretamente roteadas.
 
-Máquina principal utilizada para administração do laboratório.
+## 5. Plano de endereçamento IP
 
-## Sistema operacional
+Será utilizado o bloco privado `10.0.0.0/8`, com uma faixa reservada para cada unidade.
 
-**Zorin OS / Linux**
-
-### Responsabilidades
-
-- Administração do MikroTik
-- Administração dos servidores
-- Acesso à AWS
-- Execução do Terraform
-- SSH
-- Testes de rede
-- Troubleshooting
-- Gerenciamento da infraestrutura
-
-### Ferramentas
-
-- Terraform
-- SSH
-- Nmap
-- Wireshark
-- AWS CLI
-- kubectl
-- Terminal Linux
-- WinBox, quando necessário
-
-### Implementação
-
-- [ ] Configuração do sistema operacional
-- [ ] Configuração de IP administrativo
-- [ ] Configuração de SSH
-- [ ] Instalação do Terraform
-- [ ] Instalação da AWS CLI
-- [ ] Configuração do acesso à AWS
-- [ ] Instalação do kubectl
-- [ ] Configuração de acesso ao MikroTik
-- [ ] Configuração de acesso ao Ubuntu Server
-- [ ] Configuração do Wazuh Agent
-- [ ] Testes de administração remota
-
-### Configurações realizadas
-
-```text
-Adicionar aqui comandos, configurações e decisões realizadas.
-```
-
----
-
-# 3. Servidor Local
-
-Notebook utilizado como servidor físico do laboratório.
-
-## Sistema operacional
-
-**Ubuntu Server**
-
-### Objetivo
-
-Hospedar serviços locais que façam parte da infraestrutura e do ambiente de segurança.
-
-### Hardware
-
-```text
-Equipamento:
-CPU:
-RAM:
-Armazenamento:
-Interface de rede:
-IP:
-```
-
-### Serviços
-
-Atualmente planejados:
-
-- Wazuh Server
-- Wazuh Indexer
-- Wazuh Dashboard
-
-Possíveis serviços futuros:
-
-- Docker
-- Reverse Proxy
-- Servidor de logs
-- DNS secundário
-- Monitoramento
-- Serviços internos do laboratório
-
-### Implementação
-
-- [ ] Instalação do Ubuntu Server
-- [ ] Configuração de IP estático
-- [ ] Configuração de hostname
-- [ ] Atualização do sistema
-- [ ] Configuração de SSH
-- [ ] Hardening básico
-- [ ] Configuração de firewall local
-- [ ] Instalação do Wazuh
-- [ ] Configuração dos agentes
-- [ ] Testes de comunicação
-- [ ] Backup das configurações
-
----
-
-# 4. Wazuh
-
-O Wazuh é utilizado como plataforma de segurança e monitoramento dos endpoints do laboratório.
-
-## Objetivos
-
-- Centralização de eventos
-- Monitoramento dos endpoints
-- Detecção de eventos de segurança
-- File Integrity Monitoring
-- Vulnerability Detection
-- Coleta de logs
-- Visualização de alertas
-- Experimentos de SIEM/XDR
-
-## Arquitetura
-
-```text
-PC Admin
-   │
-   │ Wazuh Agent
-   ▼
-Ubuntu Server
-   │
-   ├── Wazuh Server
-   ├── Wazuh Indexer
-   └── Wazuh Dashboard
-```
-
-## Implementação
-
-- [ ] Instalação do Wazuh Server
-- [ ] Instalação do Wazuh Indexer
-- [ ] Instalação do Wazuh Dashboard
-- [ ] Cadastro do PC Admin
-- [ ] Instalação do Wazuh Agent
-- [ ] Teste de comunicação
-- [ ] Configuração de FIM
-- [ ] Configuração de vulnerabilidades
-- [ ] Criação de regras personalizadas
-- [ ] Testes de eventos
-- [ ] Documentação dos alertas
-
-## Testes realizados
-
-```text
-Exemplo:
-
-Teste:
-Resultado esperado:
-Resultado obtido:
-Conclusão:
-```
-
----
-
-# 5. AWS
-
-A AWS representa a camada de infraestrutura em nuvem do laboratório.
-
-O ambiente será utilizado progressivamente, evitando a criação de serviços sem necessidade prática.
-
-## Objetivos
-
-- Aprender administração de infraestrutura cloud
-- Provisionar recursos utilizando Terraform
-- Executar aplicações pessoais
-- Criar workloads em Kubernetes
-- Trabalhar com redes cloud
-- Integrar infraestrutura local e cloud
-
-## Arquitetura prevista
-
-```text
-AWS
-│
-├── VPC
-│
-├── Subnets
-│
-├── Security Groups
-│
-├── Compute
-│
-├── Kubernetes
-│
-└── Aplicações
-```
-
-Os serviços serão definidos conforme a necessidade do laboratório.
-
-## Possíveis serviços
-
-- EC2
-- VPC
-- IAM
-- S3
-- Route 53
-- CloudWatch
-- EKS
-
-> A inclusão de cada serviço deverá estar relacionada a uma necessidade real do projeto.
-
-## Implementação
-
-- [ ] Criação da conta/ambiente
-- [ ] Configuração de IAM
-- [ ] Configuração da AWS CLI
-- [ ] Criação da VPC
-- [ ] Criação das subnets
-- [ ] Configuração de Security Groups
-- [ ] Provisionamento via Terraform
-- [ ] Definição da solução Kubernetes
-- [ ] Deploy da primeira aplicação
-- [ ] Configuração de observabilidade
-- [ ] Testes de conectividade
-- [ ] Avaliação de integração VPN com o laboratório local
-
----
-
-# 6. Kubernetes
-
-O Kubernetes será utilizado na camada AWS para estudar orquestração de containers e execução de aplicações.
-
-## Objetivos
-
-- Deploy de aplicações
-- Gerenciamento de containers
-- Services
-- Deployments
-- ConfigMaps
-- Secrets
-- Volumes
-- Escalabilidade
-- Atualizações controladas
-
-## Implementação
-
-- [ ] Definir arquitetura Kubernetes
-- [ ] Criar cluster
-- [ ] Configurar kubectl
-- [ ] Criar namespace do laboratório
-- [ ] Fazer deploy da primeira aplicação
-- [ ] Criar Service
-- [ ] Configurar Ingress
-- [ ] Configurar armazenamento
-- [ ] Configurar Secrets
-- [ ] Testar atualização de aplicação
-- [ ] Testar rollback
-- [ ] Documentar arquitetura final
-
----
-
-# 7. Terraform
-
-Terraform será utilizado como ferramenta de **Infrastructure as Code (IaC)** para administrar principalmente os recursos em cloud.
-
-A execução será feita através do **PC Admin**.
-
-## Objetivos
-
-- Padronizar a criação da infraestrutura
-- Manter a configuração da AWS reproduzível
-- Automatizar provisionamento
-- Controlar mudanças de infraestrutura
-- Reduzir configurações manuais
-
-## Estrutura prevista
-
-```text
-terraform/
-├── providers.tf
-├── variables.tf
-├── outputs.tf
-├── network.tf
-├── compute.tf
-├── kubernetes.tf
-└── terraform.tfvars.example
-```
-
-## Fluxo
-
-```bash
-terraform init
-terraform fmt
-terraform validate
-terraform plan
-terraform apply
-```
-
-Por segurança, alterações destrutivas ou de produção devem sempre passar por revisão antes da execução.
-
-## Implementação
-
-- [ ] Configurar provider AWS
-- [ ] Configurar variáveis
-- [ ] Criar VPC via Terraform
-- [ ] Criar subnets
-- [ ] Criar Security Groups
-- [ ] Criar recursos de compute
-- [ ] Provisionar recursos Kubernetes
-- [ ] Criar outputs
-- [ ] Validar plano
-- [ ] Documentar mudanças
-
----
-
-# 8. VMware
-
-O VMware só será incluído na arquitetura caso exista uma função prática para virtualização local.
-
-Possíveis usos:
-
-- Testes com máquinas virtuais
-- Laboratórios temporários
-- Testes de sistemas operacionais
-- Simulação de servidores
-- Ambientes isolados
-
-Caso nenhuma VM seja utilizada de forma permanente no projeto, o VMware não precisa fazer parte da topologia principal.
-
-### Status
-
-```text
-[ ] Não utilizado
-[ ] Em avaliação
-[ ] Utilizado no laboratório
-```
-
----
-
-# Comunicação entre os componentes
-
-| Origem | Destino | Função |
-|---|---|---|
-| Internet | MikroTik | Acesso externo |
-| MikroTik | PC Admin | Rede administrativa |
-| MikroTik | Ubuntu Server | Rede de servidores |
-| PC Admin | MikroTik | Administração |
-| PC Admin | Ubuntu Server | SSH / administração |
-| PC Admin | AWS | Terraform / AWS CLI / kubectl |
-| PC Admin | Wazuh | Envio de eventos |
-| Ubuntu Server | PC Admin | Monitoramento |
-| AWS | Kubernetes | Execução de workloads |
-| MikroTik | AWS | VPN / integração futura |
-
----
-
-# Endereçamento de rede
-
-Esta seção deve refletir a configuração real do laboratório.
-
-| Equipamento | Interface | Rede | IP | Função |
-|---|---|---|---|---|
-| MikroTik | LAN | `A definir` | `A definir` | Gateway |
-| PC Admin | Ethernet | `A definir` | `A definir` | Administração |
-| Ubuntu Server | Ethernet | `A definir` | `A definir` | Servidor |
-| AWS | VPC | `A definir` | `A definir` | Cloud |
-
----
-
-# Segurança
-
-Princípios utilizados no projeto:
-
-- Segmentação de rede
-- Menor privilégio
-- Firewall no edge
-- Firewall nos servidores
-- Administração autenticada
-- Monitoramento com Wazuh
-- Infraestrutura versionada
-- Secrets fora do código
-- Acesso SSH utilizando chaves
-- Controle de acesso aos recursos AWS
-
----
-
-# Estrutura do repositório
-
-```text
-homelab/
-├── README.md
-│
-├── docs/
-│   ├── topologia.png
-│   ├── rede.md
-│   ├── mikrotik.md
-│   ├── wazuh.md
-│   ├── aws.md
-│   └── kubernetes.md
-│
-├── terraform/
-│   ├── providers.tf
-│   ├── variables.tf
-│   ├── outputs.tf
-│   └── modules/
-│
-├── scripts/
-│
-├── configs/
-│   ├── mikrotik/
-│   └── wazuh/
-│
-└── tests/
-```
-
----
-
-# Roadmap
-
-## Fase 1 — Rede
-
-- [ ] MikroTik instalado
-- [ ] LAN configurada
-- [ ] DHCP configurado
-- [ ] DNS configurado
-- [ ] Firewall configurado
-- [ ] Endereçamento definido
-
-## Fase 2 — Administração
-
-- [ ] PC Admin configurado
-- [ ] SSH configurado
-- [ ] Terraform instalado
-- [ ] AWS CLI instalada
-- [ ] kubectl instalado
-
-## Fase 3 — Servidor
-
-- [ ] Ubuntu Server instalado
-- [ ] Rede configurada
-- [ ] SSH configurado
-- [ ] Hardening realizado
-
-## Fase 4 — Segurança
-
-- [ ] Wazuh instalado
-- [ ] PC Admin registrado
-- [ ] Logs sendo enviados
-- [ ] Alertas validados
-- [ ] Regras testadas
-
-## Fase 5 — Cloud
-
-- [ ] AWS configurada
-- [ ] IAM configurado
-- [ ] VPC criada
-- [ ] Recursos provisionados com Terraform
-
-## Fase 6 — Kubernetes
-
-- [ ] Cluster criado
-- [ ] kubectl configurado
-- [ ] Aplicação publicada
-- [ ] Services configurados
-- [ ] Observabilidade configurada
-
-## Fase 7 — Integração
-
-- [ ] Integração local/cloud
-- [ ] VPN, caso necessária
-- [ ] Monitoramento centralizado
-- [ ] Documentação final
-
----
-
-# Registro de evolução
-
-## Etapa 01 — Estrutura inicial
-
-**Objetivo:**
-
-```text
-Descrever o objetivo da etapa.
-```
-
-**Alterações realizadas:**
-
-```text
-Descrever o que foi configurado.
-```
-
-**Problemas encontrados:**
-
-```text
-Descrever erros, limitações ou dificuldades.
-```
-
-**Solução aplicada:**
-
-```text
-Descrever como o problema foi resolvido.
-```
-
-**Resultado:**
-
-```text
-Descrever o estado final da etapa.
-```
-
----
-
-## Etapa 02
-
-```text
-Adicionar próxima etapa.
-```
-
----
-
-# Decisões técnicas
-
-Esta seção registra decisões importantes para evitar que alterações futuras percam o contexto original.
-
-| Decisão | Motivo |
+| Unidade | Bloco reservado |
 |---|---|
-| MikroTik como gateway principal | Centralizar roteamento, firewall, DNS e LAN |
-| Zorin OS no PC Admin | Sistema principal de administração |
-| Ubuntu Server no servidor físico | Ambiente estável para serviços Linux |
-| Wazuh no servidor local | Monitoramento e laboratório de segurança |
-| Terraform no PC Admin | Centralizar o gerenciamento IaC |
-| Kubernetes na AWS | Laboratório de containers e cloud |
-| VMware opcional | Só será mantido se houver uso real |
+| Matriz | `10.10.0.0/16` |
+| Filial 1 | `10.20.0.0/16` |
+| Filial 2 | `10.30.0.0/16` |
+| Links WAN | `10.255.0.0/24` |
 
----
+### 5.1. Sub-redes da matriz
 
-# Tecnologias
+| VLAN | Sub-rede |
+|---:|---|
+| 10 | `10.10.10.0/24` |
+| 20 | `10.10.20.0/24` |
+| 30 | `10.10.30.0/24` |
+| 40 | `10.10.40.0/24` |
+| 50 | `10.10.50.0/24` |
+| 60 | `10.10.60.0/24` |
+| 70 | `10.10.70.0/24` |
+| 80 | `10.10.80.0/24` |
+| 90 | `10.10.90.0/24` |
+| 99 | `10.10.99.0/24` |
 
-![Linux](https://img.shields.io/badge/Linux-Zorin%20OS%20%7C%20Ubuntu-informational)
-![MikroTik](https://img.shields.io/badge/MikroTik-RouterOS-informational)
-![Wazuh](https://img.shields.io/badge/Wazuh-SIEM%20%2F%20XDR-informational)
-![AWS](https://img.shields.io/badge/AWS-Cloud-informational)
-![Terraform](https://img.shields.io/badge/Terraform-IaC-informational)
-![Kubernetes](https://img.shields.io/badge/Kubernetes-Orchestration-informational)
+As filiais deverão seguir o mesmo padrão, utilizando `10.20.x.0/24` na Filial 1 e `10.30.x.0/24` na Filial 2.
 
----
+O dimensionamento definitivo das sub-redes, gateways, endereços estáticos e intervalos DHCP deverá ser documentado durante a implementação.
 
-# Objetivo do projeto
+## 6. Requisitos técnicos
 
-O objetivo deste laboratório não é apenas instalar tecnologias individualmente, mas entender como diferentes componentes de infraestrutura trabalham juntos.
+O projeto deverá contemplar:
 
-O projeto busca desenvolver experiência prática em:
+- Topologia física das três unidades.
+- Topologia lógica e identificação dos equipamentos.
+- Configuração de VLANs.
+- Configuração de portas de acesso e trunks 802.1Q.
+- Roteamento entre VLANs.
+- Roteamento WAN entre matriz e filiais.
+- Endereçamento IPv4 e definição de gateways.
+- Configuração de DHCP e DNS.
+- Representação dos serviços corporativos.
+- Configuração de ACLs para controle de acesso.
+- Políticas de isolamento da rede de visitantes.
+- Controle de acesso aos servidores.
+- Documentação das interfaces, conexões, VLANs e sub-redes.
 
-- Redes
-- Linux
-- Segurança
-- Administração de servidores
-- Cloud
-- Infrastructure as Code
-- Kubernetes
-- Troubleshooting
-- Observabilidade
-- Documentação técnica
+## 7. Critérios de conclusão
 
-Cada componente deverá possuir uma função clara dentro da arquitetura, evitando adicionar tecnologias apenas para aumentar artificialmente a stack utilizada.
+O projeto será considerado concluído quando:
 
----
+1. Os dispositivos obtiverem endereços IP válidos conforme suas respectivas redes.
+2. A comunicação entre VLANs funcionar de acordo com as políticas estabelecidas.
+3. A matriz e as duas filiais possuírem conectividade WAN funcional.
+4. Os dispositivos autorizados das filiais conseguirem acessar os serviços corporativos da matriz.
+5. A resolução DNS e a distribuição DHCP funcionarem conforme o desenho implementado.
+6. As ACLs impedirem os acessos não autorizados definidos no escopo.
+7. A rede de visitantes permanecer isolada dos recursos internos.
+8. Os testes de conectividade, roteamento e acesso aos serviços forem realizados e documentados.
+9. A topologia física e lógica estiver documentada e o arquivo do Packet Tracer estiver organizado.
 
-## Status
+## 8. Restrições do ambiente
 
-**Em desenvolvimento.**
+A implementação será realizada utilizando os equipamentos, serviços e recursos disponíveis no Cisco Packet Tracer.
+
+Equipamentos e serviços reais que não possuam representação integral no simulador deverão ser substituídos por equivalentes funcionais para fins de estudo.
+
+O Active Directory, o firewall dedicado, o NAS, o monitoramento e a VPN deverão ser representados conforme as capacidades efetivamente disponíveis no ambiente de simulação.
+
+O foco do projeto é o planejamento e a implementação de uma infraestrutura corporativa, abrangendo switching, routing, serviços de rede, segmentação e segurança.
